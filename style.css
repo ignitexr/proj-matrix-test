@@ -1,0 +1,26 @@
+body {
+  -webkit-tap-highlight-color: rgba(0,0,0,0);
+}
+
+.absolute-fill {
+  position:absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+}
+
+
+#splashScreen {
+  visibility: hidden;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-color: black;
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-image: url('assets/Jumanji_Ostrich_SplasScreen_1.jpg');
+  z-index: 10;
+}
+
