@@ -3,6 +3,8 @@ var LEFT = 0
 var RIGHT = 0
 var DEPTH = 0
 var BOTTOM = 0
+var TOP2 = 0
+var LEFT2 = 0
 
 AFRAME.registerComponent('initialize-game', {
   init() {
@@ -43,6 +45,21 @@ AFRAME.registerComponent('initialize-game', {
       RIGHT = direction.x
       DEPTH = direction.z
     }
+    this.getScreenWH = (depth) => {
+      const cameraOffset = this.camera.position.z;
+      if ( depth < cameraOffset ) depth -= cameraOffset;
+      else depth += cameraOffset;
+  
+      var ratio = window.outerWidth/window.innerHeight
+      var fl = this.camera.getFocalLength();
+      var vFOV = THREE.Math.degToRad( this.camera.fov ); // convert vertical fov to radians
+      var height = 2 * Math.tan( vFOV / 2 ) * -depth; // visible height
+      var width = height * ratio;
+      var vector = new THREE.Vector2(width, height)
+      TOP2 = vector.y/2
+      LEFT2 = -vector.x/2
+      return vector
+    }
 
     this.handleChange = () => {
       console.log('got change')
@@ -53,10 +70,11 @@ AFRAME.registerComponent('initialize-game', {
         this.getBotLeftDir()
         this.getBotRightDir()
         this.generate_grid()
+        this.getScreenWH(-3)
       }, 300)
     }
 
-    this.el.sceneEl.addEventListener('loaded', this.handleChange)
+    //this.el.sceneEl.addEventListener('loaded', this.handleChange)
     this.el.sceneEl.addEventListener('realityready', this.handleChange)
     window.addEventListener('resize', this.handleChange)
 
@@ -115,5 +133,14 @@ AFRAME.registerComponent('initialize-game', {
     brGrid.setAttribute('gltf-model', '#texGrid')
     brGrid.object3D.position.copy(pos)
     cameraElement.appendChild(brGrid);
+
+    pos.x = LEFT2
+    pos.y = TOP2
+    pos.z = zPos
+    var mathGrid = document.createElement('a-entity');
+    mathGrid.setAttribute('gltf-model', '#texGrid')
+    mathGrid.object3D.position.copy(pos)
+    cameraElement.appendChild(mathGrid);
+
   },
 })
